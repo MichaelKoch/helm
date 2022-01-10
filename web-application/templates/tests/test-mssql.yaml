@@ -1,15 +1,16 @@
+{{- $relname := .Release.Name -}}
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "web-application.fullname" . }}-test-mssql"
-  labels:
-    {{- include "web-application.labels" . | nindent 4 }}
+  name: "{{.Release.Name}}-test-mssql"
+ 
   annotations:
     "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   containers:
     - name: wget
       image: busybox
-      command: ['wget']
-      args: ['{{ include "web-application.fullname" . }}:{{ .Values.service.port }}']
+      command: ['nc']
+      args: ['-zv','{{ $relname }}-mssql-linux','1433']
   restartPolicy: Never

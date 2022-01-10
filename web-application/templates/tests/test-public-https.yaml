@@ -1,11 +1,11 @@
+{{- $relname := .Release.Name -}}
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "web-application.fullname" . }}-test-public-https"
-  labels:
-    {{- include "web-application.labels" . | nindent 4 }}
+  name: "{{ .Release.Name }}-test-public-https"
   annotations:
     "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   containers:
     - name: wget

@@ -93,7 +93,7 @@ mongodb:
 ####   SQL SERVER  CONFIGURATION  ###
 #####################################
 mssql-linux:
-  enabled: false
+  enabled: true
   acceptEula:
   value: "n"
   edition:
@@ -127,12 +127,12 @@ mssql-linux:
     initialDelaySeconds: 15
     periodSeconds: 20
   readinessprobe:
-    initialDelaySeconds: 5
-    periodSeconds: 10
+    initialDelaySeconds: 10
+    periodSeconds: 30
   resources:
     limits:
     #  cpu: 100m
-      memory: 500M
+      memory: 1Gi
     # requests:
     #  cpu: 100m
     #  memory: 2Gi
