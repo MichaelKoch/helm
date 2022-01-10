@@ -5,5 +5,5 @@ dependencies:
 - name: mssql-linux
   repository: https://charts.helm.sh/stable
   version: 0.11.4
-digest: sha256:f6eee5c138dcac396d3bcf6686e51e6810f62c9e4b6194975146052c8741f7f8
-generated: "2022-01-10T10:52:27.0182965+01:00"
+digest: sha256:f3695118e5cfe0711c2a7e84eb7e9dedc2922d7453fd8bc31c8a9a2990e17b10
+generated: "2022-01-10T14:12:35.2052895+01:00"
