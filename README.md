@@ -15,7 +15,7 @@ a helm template that provide the following stack :
 ### Status
 
 * [x] documentation available
-* [x] Quality ensured
+* [x] Test succeeded
 * [ ] Security audit done
 
 ---

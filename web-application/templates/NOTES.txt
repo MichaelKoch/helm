@@ -1,8 +1,18 @@
+{{ $url := "" }}
+{{ $path := "" }}
+{{ $releaseName := .Release.Name }}
+{{ with index .Values.ingress.hosts 0 }}
+{{ $url = .host }}
+  {{ with index .paths 0 }}
+    {{ $path = .path | default $releaseName }}
+  {{ end }}
+{{ end }}
+
 1. Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
 {{- range $host := .Values.ingress.hosts }}
   {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}/{{ $path }}
   {{- end }}
 {{- end }}
 {{- else if contains "NodePort" .Values.service.type }}

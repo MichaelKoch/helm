@@ -1,4 +1,13 @@
 {{- if .Values.ingress.enabled -}}
+{{ $url := "" }}
+{{ $path := "" }}
+{{ $releaseName := .Release.Name }}
+{{ with index .Values.ingress.hosts 0 }}
+{{ $url = .host }}
+  {{ with index .paths 0 }}
+    {{ $path = .path | default $releaseName }}
+  {{ end }}
+{{ end }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -13,6 +22,6 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "web-application.fullname" . }}:{{ .Values.service.port }}']
+      args: ['https://{{ $url }}/{{ $path }}']
   restartPolicy: Never
 {{- end -}}

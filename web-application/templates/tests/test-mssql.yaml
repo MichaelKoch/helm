@@ -1,3 +1,4 @@
+{{- if .Values.ingress.enabled -}}
 {{- $relname := .Release.Name -}}
 apiVersion: v1
 kind: Pod
@@ -14,3 +15,4 @@ spec:
       command: ['nc']
       args: ['-zv','{{ $relname }}-mssql-linux','1433']
   restartPolicy: Never
+{{- end -}}
