@@ -10,7 +10,8 @@ a helm template that provide the following stack :
 * (optional) ms sql server (linux) 2019 express ( microsoft stable 0.11.4)
 * ![](web-application/documents/overview.png)
   
-  see for details :
+  more details :
+  https://github.com/MichaelKoch/helm/blob/main/web-application/README.md
 
 ### Status
 
