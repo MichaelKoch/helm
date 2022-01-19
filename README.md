@@ -13,11 +13,5 @@ a helm template that provide the following stack :
   more details :
   https://github.com/MichaelKoch/helm/blob/main/web-application/README.md
 
-### Status
 
-* [x] documentation available
-* [x] Test succeeded
-* [ ] Security audit done
-
----
 
