@@ -25,26 +25,33 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "web-application.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          env: 
+            {{ if eq .Values.mongodb.enabled true }} 
+            - name: MONGO_PORT
+              value:  "27017"
+            - name: MONGO_URL
+              value:  mongodb://{{.Values.mongodb.auth.rootUser}}:{{.Values.mongodb.auth.rootUser}}@{{.Release.Name}}-mongodb
+            - name: MONGO_HOST
+              value:  {{.Release.Name}}-mongodb
+            - name: MONGO_USER
+              value: root
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{.Release.Name}}-mongodb
+                  key: mongodb-root-password
+            {{ end }}
+            
+            {{if .Values.env }}{{ toYaml .Values.env | nindent 12}} {{ end }}     
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          ports: {{if .Values.ports }}{{ toYaml .Values.ports | nindent 12}} {{ end }} 
+          livenessProbe: {{if .Values.livenessProbe }}{{ toYaml .Values.livenessProbe | nindent 12}} {{ end }} 
+          readinessProbe: {{if .Values.readinessProbe }}{{ toYaml .Values.readinessProbe | nindent 12}} {{ end }} 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

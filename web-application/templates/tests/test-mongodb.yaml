@@ -1,4 +1,4 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.mongodb.enabled -}}
 {{- $relname := .Release.Name -}}
 apiVersion: v1
 kind: Pod
