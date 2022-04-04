@@ -29,14 +29,17 @@ jobs:
       
       - name: Helm tool installer
         uses: Azure/setup-helm@v2.0
-       
+      
+      - name: create package folder 
+        run: mkdir -p ./packages
+      
       # Runs a single command using the runners shell
       - name: helm dependency update ./web-application
         run: helm dependency update ./web-application
        
       # Runs a single command using the runners shell
       - name: helm package ./web-application 
-        run: helm package ./web-application
+        run: helm package ./web-application -d packages
        
       # Runs a set of commands using the runners shell
       - name: git upload
