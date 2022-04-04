@@ -28,7 +28,7 @@ jobs:
       
       
       - name: Helm tool installer
-        uses: Azure/setup-helm@v2.0s
+        uses: Azure/setup-helm@v2.0
        
       # Runs a single command using the runners shell
       - name: helm dependency update 
