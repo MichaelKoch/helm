@@ -7,6 +7,7 @@ image:
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
+  environments:
   
 imagePullSecrets: [
 
@@ -25,10 +26,10 @@ service:
   port: 80
 
 ingress:
-  enabled: true
+  enabled: false
   annotations: 
     kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
+    
   hosts:
     - host: public.cliap.de
       paths:
@@ -36,10 +37,6 @@ ingress:
         backend:
           serviceName: public.cliap.de
           servicePort: 80
-  tls: 
-    - secretName: public.cliap.de
-      hosts:
-        - public.cliap.de
 
 resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -71,6 +68,11 @@ mongodb:
   global:
     storageClass: "managed"
     namespaceOverride: ""
+  # image:
+  #   registry: docker.io
+  #   repository: bitnami/mongodb
+  #   tag: 5.0.6-debian-10-r2
+    
   clusterDomain: mongo.local
   architecture: standalone
   auth:
