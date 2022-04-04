@@ -7,7 +7,7 @@ on:
   push:
     branches: [ main ]
     paths:
-    - '/web-application/**'
+    - 'web-application/**'
   pull_request:
     branches: [ main ]
 
