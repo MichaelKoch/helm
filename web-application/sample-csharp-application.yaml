@@ -1,0 +1,111 @@
+# Default values for web-application.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+
+volumes:
+  - name: appsettings
+    configMap:
+      name: ${RELEASE_NAME}-settings
+  - name: appconfig
+    configMap:
+      name: ${RELEASE_NAME}-config
+
+volumeMounts:
+    - name: appsettings
+      mountPath: "/app/appsettings.json"
+      readOnly: true
+      subPath: "appsettings.json"
+    
+    - name: appsettings
+      mountPath: "/app/appsettings.json"
+      readOnly: true
+      subPath: "appconfig.json"
+
+ports:
+  - name: http
+    containerPort: 5000
+    protocol: TCP
+livenessProbe: 
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+imagePullSecrets: [
+
+]
+
+
+podAnnotations: {}
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: some.hostname.de
+      paths:
+      - path: ''
+        backend:
+          serviceName: some.hostname.de
+          servicePort: 80
+  tls: 
+    - secretName: some.hostname.de
+      hosts:
+        - some.hostname.de
+
+resources: 
+  limits:
+    cpu: 500m
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 1024Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 75
+
+
+#####################################
+####   MONGO DB CONFIGURATION     ###
+#####################################
+mongodb:
+  enabled: true
+  global:
+    storageClass: "managed"
+    namespaceOverride: ""
+  image:
+    registry: docker.io
+    repository: bitnami/mongodb
+    tag: 5.0.6-debian-10-r2
+    
+  clusterDomain: mongo.local
+  architecture: standalone
+  auth:
+    ## @param auth.enabled Enable authentication
+    ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
+    ##
+    enabled: true
+    rootUser: root
+    ## @param auth.rootPassword MongoDB&reg; root password
+    ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#setting-the-root-password-on-first-run
+    ##
+    rootPassword: "root"
+    usernames: ['service']
+    passwords: ['service']
+    databases: ['app']

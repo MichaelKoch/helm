@@ -1,0 +1,116 @@
+# Default values for web-application.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+
+volumes:
+  - name: appsettings
+    configMap:
+      name: existing-config-map
+
+volumeMounts:
+    - name: name_of_the_volume
+      mountPath: "/path/where/to/mount"
+      readOnly: true
+      subPath: "subPath_in_the volume"
+
+ports:
+  - name: http
+    containerPort: 80
+    protocol: TCP
+livenessProbe: 
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+imagePullSecrets: [
+
+]
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: some.hostname.de
+      paths:
+      - path: ''
+        backend:
+          serviceName: some.hostname.de
+          servicePort: 80
+  tls: 
+    - secretName: some.hostname.de
+      hosts:
+        - some.hostname.de
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. 
+  limits:
+    cpu: 500m
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 1024Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
+  targetMemoryUtilizationPercentage: 75
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+#####################################
+####   MONGO DB CONFIGURATION     ###
+#####################################
+mongodb:
+  enabled: true
+  global:
+    storageClass: "managed"
+    namespaceOverride: ""
+  image:
+    registry: docker.io
+    repository: bitnami/mongodb
+    tag: 5.0.6-debian-10-r2
+    
+  clusterDomain: mongo.local
+  architecture: standalone
+  auth:
+    ## @param auth.enabled Enable authentication
+    ## ref: https://docs.mongodb.com/manual/tutorial/enable-authentication/
+    ##
+    enabled: true
+    rootUser: root
+    ## @param auth.rootPassword MongoDB&reg; root password
+    ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#setting-the-root-password-on-first-run
+    ##
+    rootPassword: "root"
+    usernames: ['service']
+    passwords: ['service']
+    databases: ['app']
