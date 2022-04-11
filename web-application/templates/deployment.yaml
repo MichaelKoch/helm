@@ -25,12 +25,20 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "web-application.serviceAccountName" . }}
+      {{- if .Values.volumes }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8}} 
+      {{ end }}   
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+             {{- if .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12}} 
+          {{ end }}   
           env: 
-            {{ if eq .Values.mongodb.enabled true }} 
+            {{- if eq .Values.mongodb.enabled true }} 
             - name: MONGO_PORT
               value:  "27017"
             - name: MONGO_URL
@@ -45,8 +53,9 @@ spec:
                   name: {{.Release.Name}}-mongodb
                   key: mongodb-root-password
             {{ end }}
-            
-            {{if .Values.env }}{{ toYaml .Values.env | nindent 12}} {{ end }}     
+          {{- if .Values.env }}{{ toYaml .Values.env | nindent 12}} {{ end }}  
+         
+       
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports: {{if .Values.ports }}{{ toYaml .Values.ports | nindent 12}} {{ end }} 
