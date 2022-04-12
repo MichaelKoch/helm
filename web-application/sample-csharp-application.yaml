@@ -8,28 +8,32 @@ image:
   tag: "latest"
 
 
-volumes:
-  - name: appsettings
-    configMap:
-      name: ${RELEASE_NAME}-settings
-  - name: appconfig
-    configMap:
-      name: ${RELEASE_NAME}-config
+configMap:
+    appsetting: true
+    appconfig: true
 
-volumeMounts:
-    - name: appsettings
-      mountPath: "/app/appsettings.json"
-      readOnly: true
-      subPath: "appsettings.json"
+# volumes:
+#   - name: appsettings
+#     configMap:
+#       name: ${RELEASE_NAME}-settings
+#   - name: appconfig
+#     configMap:
+#       name: ${RELEASE_NAME}-config
+
+# volumeMounts:
+#     - name: appsettings
+#       mountPath: "/app/appsettings.json"
+#       readOnly: true
+#       subPath: "appsettings.json"
     
-    - name: appsettings
-      mountPath: "/app/appsettings.json"
-      readOnly: true
-      subPath: "appconfig.json"
+#     - name: appsettings
+#       mountPath: "/app/appsettings.json"
+#       readOnly: true
+#       subPath: "appconfig.json"
 
 ports:
   - name: http
-    containerPort: 5000
+    containerPort: 80
     protocol: TCP
 livenessProbe: 
   httpGet:

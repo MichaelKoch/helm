@@ -8,18 +8,6 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
-
-volumes:
-  - name: appsettings
-    configMap:
-      name: existing-config-map
-
-volumeMounts:
-    - name: name_of_the_volume
-      mountPath: "/path/where/to/mount"
-      readOnly: true
-      subPath: "subPath_in_the volume"
-
 ports:
   - name: http
     containerPort: 80

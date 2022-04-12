@@ -1,0 +1,16 @@
+{{- if .Values.create -}}
+{{- if .Values.create.appconfig -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+
+data:
+  appconfig.json: |-
+    {
+      "SAMPLE": {
+          config:""
+      }
+    }
+{{ end }}
+{{ end }}

@@ -25,18 +25,45 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "web-application.serviceAccountName" . }}
-      {{- if .Values.volumes }}
-      volumes:
-        {{- toYaml .Values.volumes | nindent 8}} 
-      {{ end }}   
+      
+{{- if or ((.Values.configMap).appsetting) .Values.volumes}}
+      volumes: 
+        {{- if .Values.volumes }}
+          {{- toYaml .Values.volumes |  nindent 8}} 
+        {{ end }}
+          {{- if ((.Values.configMap).appsetting) }}
+        - name: appsettings
+          configMap:
+            name: {{.Release.Name}}-settings
+          {{ end }}
+          {{- if .Values.configMap.appconfig }}
+        - name: appconfig
+          configMap:
+            name: {{.Release.Name}}-config
+          {{ end }}
+{{ end }}      
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-             {{- if .Values.volumeMounts }}
+{{- if or ((.Values.configMap).appsetting) .Values.volumeMounts}}
           volumeMounts:
-            {{- toYaml .Values.volumeMounts | nindent 12}} 
-          {{ end }}   
+            {{- if .Values.volumeMounts }}
+              {{- toYaml .Values.volumeMounts |  nindent 12 }} 
+            {{ end }}
+            {{- if ((.Values.configMap).appsetting) }}
+            - name: appsettings
+              mountPath: "/app/appsettings.json"
+              readOnly: true
+              subPath: "appsettings.json"
+            {{ end }}
+            {{- if ((.Values.configMap).appconfig) }}
+            - name: appconfig
+              mountPath: "/app/appconfig.json"
+              readOnly: true
+              subPath: "appconfig.json"
+            {{ end }}
+{{ end }}
           env: 
           {{- if eq .Values.mongodb.enabled true }} 
             - name: MONGO_PORT
