@@ -1,6 +1,7 @@
 # Default values for web-application.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+nameOverride: product-service
 image:
   repository: nginx
   pullPolicy: IfNotPresent
@@ -29,6 +30,8 @@ configMap:
 #     - name: appsettings
 #       mountPath: "/app/appsettings.json"
 #       readOnly: true
+
+
 #       subPath: "appconfig.json"
 
 ports:

@@ -34,12 +34,12 @@ spec:
           {{- if ((.Values.configMap).appsetting) }}
         - name: appsettings
           configMap:
-            name: {{.Release.Name}}-settings
+            name: {{include "web-application.fullname" . }}-settings
           {{ end }}
           {{- if .Values.configMap.appconfig }}
         - name: appconfig
           configMap:
-            name: {{.Release.Name}}-config
+            name: {{include "web-application.fullname" . }}-config
           {{ end }}
 {{ end }}      
       containers:
