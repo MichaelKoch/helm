@@ -46,7 +46,7 @@ spec:
       http:
         paths:
           {{- range .paths }}
-          - path: "/{{ $path | default $releaseName }}(/|$)(.*)"
+          - path: /{{ $path | default $releaseName }}{{ "(/|$)(.*)" }}
             pathType: Prefix
             backend:
               service:
