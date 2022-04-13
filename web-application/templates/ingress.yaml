@@ -20,10 +20,10 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "web-application.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- include "web-application.labels" . | nindent 4 }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+  {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
@@ -46,7 +46,7 @@ spec:
       http:
         paths:
           {{- range .paths }}
-          - path: {{ $path | default /$releaseName }}(/|$)(.*)
+          - path: "/{{ $path | default $releaseName }}(/|$)(.*)"
             pathType: Prefix
             backend:
               service:
