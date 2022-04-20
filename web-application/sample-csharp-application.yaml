@@ -7,33 +7,6 @@ image:
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
-
-
-configMap:
-    appsetting: true
-    appconfig: true
-
-# volumes:
-#   - name: appsettings
-#     configMap:
-#       name: ${RELEASE_NAME}-settings
-#   - name: appconfig
-#     configMap:
-#       name: ${RELEASE_NAME}-config
-
-# volumeMounts:
-#     - name: appsettings
-#       mountPath: "/app/appsettings.json"
-#       readOnly: true
-#       subPath: "appsettings.json"
-    
-#     - name: appsettings
-#       mountPath: "/app/appsettings.json"
-#       readOnly: true
-
-
-#       subPath: "appconfig.json"
-
 ports:
   - name: http
     containerPort: 80
@@ -46,13 +19,6 @@ readinessProbe:
   httpGet:
     path: /
     port: http
-
-imagePullSecrets: [
-
-]
-
-
-podAnnotations: {}
 service:
   type: ClusterIP
   port: 80
@@ -95,7 +61,6 @@ mongodb:
   enabled: true
   global:
     storageClass: "managed"
-    namespaceOverride: ""
   image:
     registry: docker.io
     repository: bitnami/mongodb
@@ -112,7 +77,7 @@ mongodb:
     ## @param auth.rootPassword MongoDB&reg; root password
     ## ref: https://github.com/bitnami/bitnami-docker-mongodb/blob/master/README.md#setting-the-root-password-on-first-run
     ##
-    rootPassword: "root"
+    rootPassword: "root1"
     usernames: ['service']
     passwords: ['service']
     databases: ['app']

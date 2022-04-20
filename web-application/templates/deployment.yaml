@@ -1,3 +1,6 @@
+{{$hasVolume:= or .Values.appsettings .Values.appconfig .Values.volumes}}
+{{$hasVolumeMounts:= or .Values.appsettings .Values.appconfig .Values.volumeMounts}}
+{{$hasAnnotations:= or .Values.podAnnotations .Values.appconfig .Values.volumeMounts}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,12 +16,19 @@ spec:
       {{- include "web-application.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+    {{- if $hasAnnotations}}
       annotations:
-        {{- toYaml . | nindent 8 }}
+      {{- if .Values.podAnnotations }}{{- toYaml . | nindent 8 }}{{end}}
+      {{- if .Values.appsettings }}
+        checksum/appsettings: {{ .Values.appsettings | sha256sum }}
       {{- end }}
+      {{- if .Values.appconfig }}
+        checksum/appconfig: {{ .Values.appconfig | sha256sum }}
+      {{- end }}
+     {{- end }}
+      
       labels:
-        {{- include "web-application.selectorLabels" . | nindent 8 }}
+      {{- include "web-application.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -26,38 +36,38 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "web-application.serviceAccountName" . }}
       
-{{- if or ((.Values.configMap).appsetting) .Values.volumes}}
+{{- if $hasVolume}}
       volumes: 
         {{- if .Values.volumes }}
           {{- toYaml .Values.volumes |  nindent 8}} 
         {{ end }}
-          {{- if ((.Values.configMap).appsetting) }}
+        {{- if .Values.appsettings }}
         - name: appsettings
           configMap:
-            name: {{include "web-application.fullname" . }}-settings
-          {{ end }}
-          {{- if .Values.configMap.appconfig }}
+            name: {{include "web-application.fullname" . }}-appsettings
+        {{ end }}
+        {{- if .Values.appconfig }}
         - name: appconfig
           configMap:
-            name: {{include "web-application.fullname" . }}-config
-          {{ end }}
+            name: {{include "web-application.fullname" . }}-appconfig
+        {{ end }}
 {{ end }}      
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-{{- if or ((.Values.configMap).appsetting) .Values.volumeMounts}}
+{{- if $hasVolumeMounts}}
           volumeMounts:
             {{- if .Values.volumeMounts }}
               {{- toYaml .Values.volumeMounts |  nindent 12 }} 
             {{ end }}
-            {{- if ((.Values.configMap).appsetting) }}
+            {{- if .Values.appsettings }}
             - name: appsettings
               mountPath: "/app/appsettings.json"
               readOnly: true
               subPath: "appsettings.json"
             {{ end }}
-            {{- if ((.Values.configMap).appconfig) }}
+            {{- if .Values.appconfig }}
             - name: appconfig
               mountPath: "/app/appconfig.json"
               readOnly: true
@@ -69,7 +79,7 @@ spec:
             - name: MONGO_PORT
               value:  "27017"
             - name: MONGO_URL
-              value:  mongodb://{{.Values.mongodb.auth.rootUser}}:{{.Values.mongodb.auth.rootUser}}@{{.Release.Name}}-mongodb
+              value:  mongodb://{{.Values.mongodb.auth.rootUser}}:****************@{{.Release.Name}}-mongodb
             - name: MONGO_HOST
               value:  {{.Release.Name}}-mongodb
             - name: MONGO_USER
@@ -80,9 +90,7 @@ spec:
                   name: {{.Release.Name}}-mongodb
                   key: mongodb-root-password
             {{ end }}
-          {{- if .Values.env }}{{ toYaml .Values.env | nindent 12}} {{ end }}  
-         
-       
+            {{- if .Values.env }}{{ toYaml .Values.env | nindent 12}} {{ end }}        
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports: {{if .Values.ports }}{{ toYaml .Values.ports | nindent 12}} {{ end }} 

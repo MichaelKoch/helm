@@ -1,20 +1,9 @@
-{{- if .Values.create -}}
-{{- if .Values.create.appsetting -}}
+{{ if .Values.appsettings }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-settings
+  name: {{include "web-application.fullname" . }}-appsettings
 data:
   appsettings.json: |-
-    {
-      "Logging": {
-        "LogLevel": {
-          "Default": "Information",
-          "Microsoft": "Warning",
-          "Microsoft.Hosting.Lifetime": "Information"
-        }
-      },
-      "AllowedHosts": "*"
-    }
-{{ end }}
-{{ end }}
+    {{ .Values.appsettings }}
+{{end}}

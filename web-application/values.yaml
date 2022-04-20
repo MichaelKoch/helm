@@ -81,7 +81,7 @@ mongodb:
   enabled: true
   global:
     storageClass: "managed"
-    namespaceOverride: ""
+  
   image:
     registry: docker.io
     repository: bitnami/mongodb
