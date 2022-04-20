@@ -5,8 +5,7 @@ metadata:
   name: {{include "web-application.fullname" . }}-appconfig
 
 data:
-  appconfig.json: |-
-    {{- toJson ( .Values.appconfig ) | nindent 8}}
+  appconfig.json: {{ toJson ( .Values.appconfig ) }}
 {{end}}
 
 
