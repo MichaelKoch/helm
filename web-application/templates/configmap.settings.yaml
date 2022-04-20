@@ -5,5 +5,5 @@ metadata:
   name: {{include "web-application.fullname" . }}-appsettings
 data:
   appsettings.json: |-
-    {{ .Values.appsettings }}
+    {{- toJson ( .Values.appsettings ) | nindent 8}}
 {{end}}

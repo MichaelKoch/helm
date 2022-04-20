@@ -6,7 +6,7 @@ metadata:
 
 data:
   appconfig.json: |-
-    {{ .Values.appconfig }}
+    {{- toJson ( .Values.appconfig ) | nindent 8}}
 {{end}}
 
 
