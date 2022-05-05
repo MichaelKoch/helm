@@ -43,7 +43,7 @@ ingress:
   hosts:
     - host: some.hostname.de
       paths:
-      - path: ''
+      - path: 
         backend:
           serviceName: some.hostname.de
           servicePort: 80
