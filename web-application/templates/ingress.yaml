@@ -4,7 +4,7 @@
 {{ $url := "" }}
 {{ $path := "" }}
 {{ $releaseName := .Release.Name }}
-{{ $defaultPath := print "/" .Release.Name  "/(.*)" }}
+{{ $defaultPath := print "/" .Release.Name "/(.*)"}}
 {{ $defaultRewrite := "" }}
 {{ with index .Values.ingress.hosts 0 }}
 {{ $url = .host }}
@@ -26,6 +26,9 @@ metadata:
   {{- include "web-application.labels" . | nindent 4 }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: {{ $defaultRewrite }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^([^.?]*[^/])$ $1/ redirect;
+
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
